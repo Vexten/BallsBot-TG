@@ -95,7 +95,7 @@ class BallsBot():
             BallsBot.__bot.reply_to(message, BallsBot.__msg_dict["not_implemented"])
         
         @cls.__bot.message_handler(commands=['scratch_info'])
-        def __scratch_balls(message):
+        def __scratch_info(message):
             """
             Get scratching statistics
             """
