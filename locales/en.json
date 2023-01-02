@@ -1,5 +1,5 @@
 {
-    "hello" : "Wellcum to the BALLS bot. Bot that has BIG BALLS, made for people with BIG BALLS.\nType /help to see the list of commands.",
+    "hello" : "Wellcum to the BALLS bot, {user}.\nA bot that has BIG BALLS, made for people with BIG BALLS.\nType /help to see the list of commands.",
     "help" : "/help - shows this message\n/scratch - scratches BALLS\n/info - get info on your scratches",
     "scratched" : "You've just scratched your BALLS, you have gained {hairs} new hairs.",
     "info_scratched" : "You've scratched your BALLS {balls_scratched} times, you have {hairs} hairs total.",
