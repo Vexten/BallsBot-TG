@@ -7,7 +7,7 @@ class BallsBot():
     __msg_dict : (dict | None) = None
 
     @staticmethod
-    def __get_key(cls) -> str:
+    def __get_key() -> str:
         """
         Get bot API key\n
         Key must be inside of a 'key.txt' file on the first line
@@ -43,7 +43,7 @@ class BallsBot():
         if (cls.__bot == None):
             locale_getter = loc.LocaleGetter("./locales")
             cls.__msg_dict = locale_getter.get_message_strings()
-            key = cls.__get_key()
+            key = BallsBot.__get_key()
             cls.__bot = telebot.TeleBot(key)
             cls.__create_handlers()
         else:
