@@ -1,5 +1,5 @@
 import telebot
-from lib import LocaleGetter as loc
+from helpers.LocaleGetter import LocaleGetter
 
 class BallsBot():
 
@@ -41,7 +41,7 @@ class BallsBot():
         Create a new bot instance, if it doesn't exist
         """
         if (cls.__bot == None):
-            locale_getter = loc.LocaleGetter("./locales")
+            locale_getter = LocaleGetter("./locales")
             cls.__msg_dict = locale_getter.get_message_strings()
             key = BallsBot.__get_key()
             cls.__bot = telebot.TeleBot(key)
