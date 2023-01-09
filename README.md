@@ -1,2 +1,1 @@
-# BallsBot-TG
- BallsBot for Telegram
+# BallsBot for Telegram

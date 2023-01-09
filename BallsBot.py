@@ -7,7 +7,7 @@ class BallsBot():
     __msg_dict : (dict | None) = None
 
     @staticmethod
-    def __get_key() -> str:
+    def _get_key() -> str:
         """
         Get bot API key\n
         Key must be inside of a 'key.txt' file on the first line
@@ -43,7 +43,7 @@ class BallsBot():
         if (cls.__bot == None):
             locale_getter = LocaleGetter("./locales")
             cls.__msg_dict = locale_getter.get_message_strings()
-            key = BallsBot.__get_key()
+            key = BallsBot._get_key()
             cls.__bot = telebot.TeleBot(key)
             cls.__create_handlers()
         else:
@@ -91,6 +91,14 @@ class BallsBot():
         def __scratch_info(message : telebot.types.Message):
             """
             Get scratching statistics
+            """
+            loc = BallsBot.__get_user_locale(message.from_user.language_code)
+            BallsBot.__bot.reply_to(message, BallsBot.__msg_dict[loc]["not_implemented"])
+        
+        @cls.__bot.message_handler(commands=['shop'])
+        def __scratch_shop(message : telebot.types.Message):
+            """
+            Shop for items in BALLS shop
             """
             loc = BallsBot.__get_user_locale(message.from_user.language_code)
             BallsBot.__bot.reply_to(message, BallsBot.__msg_dict[loc]["not_implemented"])
