@@ -33,6 +33,28 @@ class MediaGetter(metaclass=abc.ABCMeta):
         """
         link = self.__video_url_filter(url)
     
+    def add_video(self, url : str, file_id : str) -> bool:
+        """
+        Adds pair `url` and `file_id` to local cache.\n
+        For usage with audio links.
+        """
+        link = self.__audio_url_filter(url)
+        self.__add_file(link, file_id)
+
+    def add_audio(self, url : str, file_id : str) -> bool:
+        """
+        Adds pair `url` and `file_id` to local cache.\n
+        For usage with video links.
+        """
+        link = self.__video_url_filter(url)
+        self.__add_file(link, file_id)
+
+    def __add_file(self, url : str, file_id : str) -> None:
+        """
+        Adds `url` to `file_id` pairing to local cache.
+        """
+        raise NotImplementedError('No DB interface yet')
+
     @staticmethod
     @abc.abstractmethod
     def __audio_url_filter(url : str) -> str:
