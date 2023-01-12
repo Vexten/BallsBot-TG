@@ -102,3 +102,12 @@ class BallsBot():
             """
             loc = BallsBot.__get_user_locale(message.from_user.language_code)
             BallsBot.__bot.reply_to(message, BallsBot.__msg_dict[loc]["not_implemented"])
+        
+        @cls.__bot.message_handler(commands=['get_audio'])
+        def __get_audio(message : telebot.types.Message):
+            """
+            Get audio from provided url
+            """
+            loc = BallsBot.__get_user_locale(message.from_user.language_code)
+            file = None
+            BallsBot.__bot.send_audio(message.chat.id,file,reply_to_message_id=message.id)

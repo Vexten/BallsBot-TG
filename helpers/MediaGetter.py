@@ -1,4 +1,6 @@
 import abc
+import telebot
+import requests as r
 
 class MediaGetter(metaclass=abc.ABCMeta):
     """
@@ -8,6 +10,14 @@ class MediaGetter(metaclass=abc.ABCMeta):
     it as a document and as it's respective format. If original file extention differs from `MP3` or `MPEG4`, another cached `file_id` will exist for the original file.
     """
 
+    MAX_SIZE_BYTES = 50*1024*1024
+    """
+    As per Telegram Bot API
+    """
+    MAX_DOWNLOAD_MEMORY_DEFAULT = 4*1024*1024*1024
+    MAX_CONCURRENT_DOWNLOADS = MAX_DOWNLOAD_MEMORY_DEFAULT // MAX_SIZE_BYTES
+    __concurrent_downloads = 0
+
     def __init__(self, db):
         """
         Super constructor.\n
@@ -15,38 +25,44 @@ class MediaGetter(metaclass=abc.ABCMeta):
         """
         self.__db = db
 
-    def get_audio(self, url : str, conform : bool) -> str:
+    def get_audio(self, url : str, conform : bool) -> (str | telebot.types.InputFile):
         """
         Gets audio from url.\n
         :param url: url to get audio from
         :param conform: whether or not to convert audio to `MP3` for usage with `send_audio`
-        :return: `str` containig either a file_id (if the file was already uploaded before) or multipart/form-data containing requested audio.
+        :return: `str` containig a file_id (if the file was already uploaded before) or `telebot.types.InputFile`.
+        If a given url is malformed, or filesize is too large, returns `file_id` of `-1`.
         """
         link = self.__audio_url_filter(url)
+        
 
-    def get_video(self, url : str, conform : bool) -> str:
+    def get_video(self, url : str, conform : bool) -> (str | telebot.types.InputFile):
         """
         Gets video from url.\n
         :param url: url to get video from
         :param conform: whether or not to convert video to `MPEG4` for usage with `send_video`
-        :return: `str` containig either a file_id (if the file was already uploaded before) or multipart/form-data containing requested video.
+        :return: `str` containig a file_id (if the file was already uploaded before) or `telebot.types.InputFile`.
+        If a given url is malformed, or filesize is too large, returns `file_id` of `-1`.
         """
         link = self.__video_url_filter(url)
+        head = r.head(link)
+        if int(head.headers['Content-Length']) > self.__max_filesize:
+            return '-1'
     
-    def add_video(self, url : str, file_id : str) -> bool:
+    def cache_video_file_id(self, url : str, file_id : str) -> bool:
         """
         Adds pair `url` and `file_id` to local cache.\n
         For usage with audio links.
         """
-        link = self.__audio_url_filter(url)
+        link = self.__video_url_filter(url)
         self.__add_file(link, file_id)
 
-    def add_audio(self, url : str, file_id : str) -> bool:
+    def cache_audio_file_id(self, url : str, file_id : str) -> bool:
         """
         Adds pair `url` and `file_id` to local cache.\n
         For usage with video links.
         """
-        link = self.__video_url_filter(url)
+        link = self.__audio_url_filter(url)
         self.__add_file(link, file_id)
 
     def __add_file(self, url : str, file_id : str) -> None:
